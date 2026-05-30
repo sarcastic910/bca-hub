@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>GDC Pulwama — BCA Resource Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --bg: #0a0f1e;
+    --bg2: #0f1628;
+    --bg3: #151d35;
+    --card: #111827;
+    --border: rgba(255,255,255,0.07);
+    --accent: #4f8ef7;
+    --accent2: #7c5cfc;
+    --accent3: #00e5b0;
+    --text: #f0f4ff;
+    --muted: #8892a4;
+    --danger: #ff6b6b;
+    --success: #00e5b0;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; }
+
+  /* NAV */
+  nav { position: sticky; top: 0; z-index: 100; background: rgba(10,15,30,0.85); backdrop-filter: blur(16px); border-bottom: 1px solid var(--border); padding: 0 2rem; display: flex; align-items: center; justify-content: space-between; height: 60px; }
+  .nav-logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 18px; letter-spacing: -0.5px; }
+  .nav-logo span { color: var(--accent); }
+  .nav-links { display: flex; gap: 8px; }
+  .nav-btn { background: none; border: 1px solid var(--border); color: var(--muted); font-family: 'DM Sans', sans-serif; font-size: 13px; padding: 6px 14px; border-radius: 8px; cursor: pointer; transition: all 0.2s; }
+  .nav-btn:hover, .nav-btn.active { background: var(--accent); border-color: var(--accent); color: white; }
+  .nav-btn.upload-btn { background: var(--accent2); border-color: var(--accent2); color: white; }
+  .nav-btn.upload-btn:hover { opacity: 0.85; }
+
+  /* HERO */
+  .hero { padding: 5rem 2rem 3rem; text-align: center; position: relative; overflow: hidden; }
+  .hero::before { content: ''; position: absolute; top: -100px; left: 50%; transform: translateX(-50%); width: 600px; height: 400px; background: radial-gradient(ellipse, rgba(79,142,247,0.12) 0%, transparent 70%); pointer-events: none; }
+  .hero-badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(79,142,247,0.1); border: 1px solid rgba(79,142,247,0.25); color: var(--accent); font-size: 12px; font-weight: 500; padding: 5px 12px; border-radius: 100px; margin-bottom: 1.5rem; letter-spacing: 0.5px; }
+  .hero-badge::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--accent3); display: inline-block; animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(1.3)} }
+  h1 { font-family: 'Syne', sans-serif; font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 800; line-height: 1.1; letter-spacing: -1.5px; margin-bottom: 1rem; }
+  h1 em { font-style: normal; background: linear-gradient(135deg, var(--accent), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .hero-sub { font-size: 16px; color: var(--muted); max-width: 480px; margin: 0 auto 2.5rem; line-height: 1.7; }
+  .hero-stats { display: flex; justify-content: center; gap: 2.5rem; flex-wrap: wrap; }
+  .stat { text-align: center; }
+  .stat-num { font-family: 'Syne', sans-serif; font-size: 28px; font-weight: 700; color: var(--text); }
+  .stat-label { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+  /* SEARCH */
+  .search-bar { max-width: 560px; margin: 2.5rem auto 0; position: relative; }
+  .search-bar input { width: 100%; background: var(--bg3); border: 1px solid var(--border); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 15px; padding: 14px 50px 14px 48px; border-radius: 14px; outline: none; transition: border-color 0.2s; }
+  .search-bar input::placeholder { color: var(--muted); }
+  .search-bar input:focus { border-color: var(--accent); }
+  .search-icon { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--muted); font-size: 18px; }
+  .search-clear { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); background: var(--bg3); border: none; color: var(--muted); cursor: pointer; font-size: 18px; display: none; }
+
+  /* FILTERS */
+  .filters { padding: 2rem 2rem 1rem; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; max-width: 1100px; margin: 0 auto; }
+  .filter-label { font-size: 12px; color: var(--muted); font-weight: 500; letter-spacing: 0.5px; margin-right: 4px; }
+  .filter-chip { background: var(--bg3); border: 1px solid var(--border); color: var(--muted); font-family: 'DM Sans', sans-serif; font-size: 13px; padding: 6px 14px; border-radius: 100px; cursor: pointer; transition: all 0.2s; white-space: nowrap; }
+  .filter-chip:hover { border-color: var(--accent); color: var(--accent); }
+  .filter-chip.active { background: rgba(79,142,247,0.12); border-color: var(--accent); color: var(--accent); }
+  .filter-chip.type-notes.active { background: rgba(0,229,176,0.1); border-color: var(--accent3); color: var(--accent3); }
+  .filter-chip.type-paper.active { background: rgba(124,92,252,0.12); border-color: var(--accent2); color: var(--accent2); }
+  .filter-chip.type-syllabus.active { background: rgba(255,107,107,0.1); border-color: var(--danger); color: var(--danger); }
+
+  /* MAIN GRID */
+  .main { max-width: 1100px; margin: 0 auto; padding: 1rem 2rem 4rem; }
+  .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; }
+  .section-title { font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 600; }
+  .count-badge { font-size: 12px; color: var(--muted); background: var(--bg3); border: 1px solid var(--border); padding: 3px 10px; border-radius: 100px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+  
+  /* RESOURCE CARD */
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 1.25rem; cursor: pointer; transition: all 0.2s; position: relative; overflow: hidden; }
+  .card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, var(--accent), var(--accent2)); opacity: 0; transition: opacity 0.2s; }
+  .card:hover { border-color: rgba(79,142,247,0.3); transform: translateY(-2px); }
+  .card:hover::before { opacity: 1; }
+  .card-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 0.75rem; }
+  .card-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+  .icon-notes { background: rgba(0,229,176,0.1); }
+  .icon-paper { background: rgba(124,92,252,0.12); }
+  .icon-syllabus { background: rgba(255,107,107,0.1); }
+  .type-badge { font-size: 10px; font-weight: 600; letter-spacing: 0.5px; padding: 3px 8px; border-radius: 6px; text-transform: uppercase; }
+  .badge-notes { background: rgba(0,229,176,0.1); color: var(--accent3); }
+  .badge-paper { background: rgba(124,92,252,0.12); color: var(--accent2); }
+  .badge-syllabus { background: rgba(255,107,107,0.1); color: var(--danger); }
+  .card-title { font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 600; margin-bottom: 6px; line-height: 1.4; }
+  .card-meta { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 1rem; }
+  .meta-tag { font-size: 11px; color: var(--muted); background: var(--bg3); padding: 3px 8px; border-radius: 6px; }
+  .card-footer { display: flex; align-items: center; justify-content: space-between; border-top: 1px solid var(--border); padding-top: 0.75rem; }
+  .card-uploader { font-size: 12px; color: var(--muted); display: flex; align-items: center; gap: 5px; }
+  .avatar { width: 20px; height: 20px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--accent2)); display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 600; color: white; }
+  .download-btn { background: none; border: 1px solid var(--border); color: var(--muted); font-size: 12px; padding: 5px 12px; border-radius: 8px; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 4px; font-family: 'DM Sans', sans-serif; }
+  .download-btn:hover { background: var(--accent); border-color: var(--accent); color: white; }
+
+  /* EMPTY STATE */
+  .empty { text-align: center; padding: 5rem 1rem; }
+  .empty-icon { font-size: 48px; margin-bottom: 1rem; }
+  .empty h3 { font-family: 'Syne', sans-serif; font-size: 18px; margin-bottom: 0.5rem; }
+  .empty p { color: var(--muted); font-size: 14px; }
+
+  /* LOADING */
+  .loading { display: flex; justify-content: center; align-items: center; padding: 5rem; gap: 8px; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); animation: bounce 1.2s infinite; }
+  .dot:nth-child(2) { animation-delay: 0.2s; background: var(--accent2); }
+  .dot:nth-child(3) { animation-delay: 0.4s; background: var(--accent3); }
+  @keyframes bounce { 0%,80%,100%{transform:scale(0.8);opacity:0.5} 40%{transform:scale(1.2);opacity:1} }
+
+  /* UPLOAD MODAL */
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(8px); z-index: 200; display: none; align-items: center; justify-content: center; padding: 1rem; }
+  .modal-overlay.open { display: flex; }
+  .modal { background: var(--bg2); border: 1px solid var(--border); border-radius: 20px; padding: 2rem; width: 100%; max-width: 500px; max-height: 90vh; overflow-y: auto; }
+  .modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; }
+  .modal-title { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 700; }
+  .modal-close { background: var(--bg3); border: 1px solid var(--border); color: var(--muted); width: 32px; height: 32px; border-radius: 8px; cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+  .modal-close:hover { color: var(--text); }
+  .form-group { margin-bottom: 1.25rem; }
+  .form-label { font-size: 13px; font-weight: 500; color: var(--muted); margin-bottom: 6px; display: block; }
+  .form-input, .form-select { width: 100%; background: var(--bg3); border: 1px solid var(--border); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 14px; padding: 11px 14px; border-radius: 10px; outline: none; transition: border-color 0.2s; appearance: none; }
+  .form-input:focus, .form-select:focus { border-color: var(--accent); }
+  .form-select option { background: var(--bg2); }
+  .file-drop { border: 2px dashed var(--border); border-radius: 12px; padding: 2rem; text-align: center; cursor: pointer; transition: all 0.2s; position: relative; }
+  .file-drop:hover, .file-drop.dragover { border-color: var(--accent); background: rgba(79,142,247,0.05); }
+  .file-drop-icon { font-size: 32px; margin-bottom: 0.5rem; }
+  .file-drop p { font-size: 14px; color: var(--muted); }
+  .file-drop span { color: var(--accent); cursor: pointer; }
+  .file-drop input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+  .file-selected { font-size: 13px; color: var(--accent3); margin-top: 8px; display: none; }
+  .progress-bar { height: 4px; background: var(--bg3); border-radius: 100px; margin-top: 1rem; display: none; overflow: hidden; }
+  .progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent2)); border-radius: 100px; width: 0%; transition: width 0.3s; }
+  .submit-btn { width: 100%; background: linear-gradient(135deg, var(--accent), var(--accent2)); border: none; color: white; font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 600; padding: 14px; border-radius: 12px; cursor: pointer; transition: opacity 0.2s; margin-top: 0.5rem; }
+  .submit-btn:hover { opacity: 0.9; }
+  .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  .toast { position: fixed; bottom: 2rem; right: 2rem; background: var(--bg2); border: 1px solid var(--border); padding: 1rem 1.25rem; border-radius: 12px; font-size: 14px; z-index: 300; transform: translateY(100px); opacity: 0; transition: all 0.3s; max-width: 320px; }
+  .toast.show { transform: translateY(0); opacity: 1; }
+  .toast.success { border-color: var(--accent3); }
+  .toast.error { border-color: var(--danger); }
+  @media(max-width:600px) {
+    .hero { padding: 3rem 1rem 2rem; }
+    .hero-stats { gap: 1.5rem; }
+    nav { padding: 0 1rem; }
+    .main { padding: 1rem 1rem 3rem; }
+    .filters { padding: 1rem 1rem 0.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">GDC<span>.</span>BCA</div>
+  <div class="nav-links">
+    <button class="nav-btn active" onclick="filterType('')">All</button>
+    <button class="nav-btn upload-btn" onclick="openModal()">+ Upload</button>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="hero-badge">GDC Pulwama — Kashmir University Affiliated</div>
+  <h1>BCA <em>Resource Hub</em></h1>
+  <p class="hero-sub">Notes, previous year papers & syllabus — uploaded by students, for students.</p>
+  <div class="hero-stats">
+    <div class="stat"><div class="stat-num" id="total-count">0</div><div class="stat-label">Resources</div></div>
+    <div class="stat"><div class="stat-num" id="notes-count">0</div><div class="stat-label">Notes</div></div>
+    <div class="stat"><div class="stat-num" id="papers-count">0</div><div class="stat-label">Papers</div></div>
+    <div class="stat"><div class="stat-num" id="syllabus-count">0</div><div class="stat-label">Syllabus</div></div>
+  </div>
+  <div class="search-bar">
+    <span class="search-icon">🔍</span>
+    <input type="text" id="search-input" placeholder="Search by subject, semester, topic..." oninput="handleSearch(this.value)"/>
+    <button class="search-clear" id="search-clear" onclick="clearSearch()">✕</button>
+  </div>
+</div>
+
+<div class="filters">
+  <span class="filter-label">FILTER</span>
+  <button class="filter-chip active" onclick="filterType('')" data-type="">All resources</button>
+  <button class="filter-chip type-notes" onclick="filterType('notes')" data-type="notes">📗 Notes</button>
+  <button class="filter-chip type-paper" onclick="filterType('paper')" data-type="paper">📝 Previous Papers</button>
+  <button class="filter-chip type-syllabus" onclick="filterType('syllabus')" data-type="syllabus">📋 Syllabus</button>
+  <span style="width:1px;height:20px;background:var(--border);margin:0 4px"></span>
+  <button class="filter-chip" onclick="filterSem('1')" data-sem="1">Sem 1</button>
+  <button class="filter-chip" onclick="filterSem('2')" data-sem="2">Sem 2</button>
+  <button class="filter-chip" onclick="filterSem('3')" data-sem="3">Sem 3</button>
+  <button class="filter-chip" onclick="filterSem('4')" data-sem="4">Sem 4</button>
+  <button class="filter-chip" onclick="filterSem('5')" data-sem="5">Sem 5</button>
+  <button class="filter-chip" onclick="filterSem('6')" data-sem="6">Sem 6</button>
+</div>
+
+<div class="main">
+  <div class="section-header">
+    <span class="section-title">Resources</span>
+    <span class="count-badge" id="result-count">Loading...</span>
+  </div>
+  <div id="grid" class="grid">
+    <div class="loading"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+  </div>
+</div>
+
+<!-- UPLOAD MODAL -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">Upload Resource</span>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Your name</label>
+      <input type="text" class="form-input" id="f-name" placeholder="e.g. Aadil Khan"/>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Subject name</label>
+      <input type="text" class="form-input" id="f-subject" placeholder="e.g. Operating Systems, Java, DBMS"/>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Semester</label>
+      <select class="form-select" id="f-sem">
+        <option value="">Select semester</option>
+        <option value="1">1st Semester</option>
+        <option value="2">2nd Semester</option>
+        <option value="3">3rd Semester</option>
+        <option value="4">4th Semester</option>
+        <option value="5">5th Semester</option>
+        <option value="6">6th Semester</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Resource type</label>
+      <select class="form-select" id="f-type">
+        <option value="">Select type</option>
+        <option value="notes">Notes</option>
+        <option value="paper">Previous Year Paper</option>
+        <option value="syllabus">Syllabus</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Year (for papers, optional)</label>
+      <input type="text" class="form-input" id="f-year" placeholder="e.g. 2022, 2023"/>
+    </div>
+    <div class="form-group">
+      <label class="form-label">PDF File</label>
+      <div class="file-drop" id="file-drop">
+        <div class="file-drop-icon">📄</div>
+        <p>Drag & drop your PDF here or <span>browse</span></p>
+        <p style="font-size:12px;margin-top:4px">Max 10MB</p>
+        <input type="file" id="f-file" accept=".pdf" onchange="handleFile(this)"/>
+      </div>
+      <div class="file-selected" id="file-selected">✅ <span id="file-name"></span></div>
+    </div>
+    <div class="progress-bar" id="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+    <button class="submit-btn" id="submit-btn" onclick="uploadResource()">Upload Resource</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, collection, addDoc, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDd_GzLLuaAGZocUQMRbdTzn7SHpYzvEpE",
+  authDomain: "gdc-note-sharing.firebaseapp.com",
+  projectId: "gdc-note-sharing",
+  storageBucket: "gdc-note-sharing.firebasestorage.app",
+  messagingSenderId: "259872070653",
+  appId: "1:259872070653:web:1a30a4b7791d38610b5794",
+  measurementId: "G-MXP00S2CFT"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const storage = getStorage(app);
+
+let allResources = [];
+let activeType = '';
+let activeSem = '';
+let searchQuery = '';
+
+async function loadResources() {
+  try {
+    const q = query(collection(db, "resources"), orderBy("createdAt", "desc"));
+    const snap = await getDocs(q);
+    allResources = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    updateStats();
+    renderGrid();
+  } catch(e) {
+    document.getElementById('grid').innerHTML = `<div class="empty"><div class="empty-icon">⚠️</div><h3>Could not load resources</h3><p>${e.message}</p></div>`;
+  }
+}
+
+function updateStats() {
+  document.getElementById('total-count').textContent = allResources.length;
+  document.getElementById('notes-count').textContent = allResources.filter(r=>r.type==='notes').length;
+  document.getElementById('papers-count').textContent = allResources.filter(r=>r.type==='paper').length;
+  document.getElementById('syllabus-count').textContent = allResources.filter(r=>r.type==='syllabus').length;
+}
+
+function renderGrid() {
+  let filtered = allResources;
+  if (activeType) filtered = filtered.filter(r => r.type === activeType);
+  if (activeSem) filtered = filtered.filter(r => r.semester === activeSem);
+  if (searchQuery) {
+    const q = searchQuery.toLowerCase();
+    filtered = filtered.filter(r =>
+      r.subject?.toLowerCase().includes(q) ||
+      r.uploaderName?.toLowerCase().includes(q) ||
+      r.type?.toLowerCase().includes(q) ||
+      r.year?.toLowerCase().includes(q)
+    );
+  }
+  document.getElementById('result-count').textContent = `${filtered.length} found`;
+  if (filtered.length === 0) {
+    document.getElementById('grid').innerHTML = `<div class="empty"><div class="empty-icon">📭</div><h3>No resources found</h3><p>Be the first to upload for this filter!</p></div>`;
+    return;
+  }
+  const icons = { notes: '📗', paper: '📝', syllabus: '📋' };
+  const iconClass = { notes: 'icon-notes', paper: 'icon-paper', syllabus: 'icon-syllabus' };
+  const badgeClass = { notes: 'badge-notes', paper: 'badge-paper', syllabus: 'badge-syllabus' };
+  const typeLabel = { notes: 'Notes', paper: 'Previous Paper', syllabus: 'Syllabus' };
+  document.getElementById('grid').innerHTML = filtered.map(r => `
+    <div class="card">
+      <div class="card-top">
+        <div class="card-icon ${iconClass[r.type] || 'icon-notes'}">${icons[r.type] || '📄'}</div>
+        <span class="type-badge ${badgeClass[r.type] || 'badge-notes'}">${typeLabel[r.type] || r.type}</span>
+      </div>
+      <div class="card-title">${r.subject || 'Unknown Subject'}</div>
+      <div class="card-meta">
+        <span class="meta-tag">Sem ${r.semester}</span>
+        ${r.year ? `<span class="meta-tag">${r.year}</span>` : ''}
+        <span class="meta-tag">BCA</span>
+      </div>
+      <div class="card-footer">
+        <div class="card-uploader">
+          <div class="avatar">${(r.uploaderName||'?')[0].toUpperCase()}</div>
+          ${r.uploaderName || 'Anonymous'}
+        </div>
+        <button class="download-btn" onclick="window.open('${r.fileUrl}','_blank')">⬇ Download</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+window.filterType = function(type) {
+  activeType = type;
+  document.querySelectorAll('[data-type]').forEach(b => b.classList.remove('active'));
+  document.querySelector(`[data-type="${type}"]`)?.classList.add('active');
+  renderGrid();
+};
+window.filterSem = function(sem) {
+  activeSem = activeSem === sem ? '' : sem;
+  document.querySelectorAll('[data-sem]').forEach(b => b.classList.remove('active'));
+  if (activeSem) document.querySelector(`[data-sem="${sem}"]`)?.classList.add('active');
+  renderGrid();
+};
+window.handleSearch = function(val) {
+  searchQuery = val;
+  document.getElementById('search-clear').style.display = val ? 'block' : 'none';
+  renderGrid();
+};
+window.clearSearch = function() {
+  document.getElementById('search-input').value = '';
+  searchQuery = '';
+  document.getElementById('search-clear').style.display = 'none';
+  renderGrid();
+};
+window.openModal = () => document.getElementById('modal').classList.add('open');
+window.closeModal = () => document.getElementById('modal').classList.remove('open');
+window.handleFile = function(input) {
+  if (input.files[0]) {
+    document.getElementById('file-name').textContent = input.files[0].name;
+    document.getElementById('file-selected').style.display = 'block';
+  }
+};
+
+window.uploadResource = async function() {
+  const name = document.getElementById('f-name').value.trim();
+  const subject = document.getElementById('f-subject').value.trim();
+  const sem = document.getElementById('f-sem').value;
+  const type = document.getElementById('f-type').value;
+  const year = document.getElementById('f-year').value.trim();
+  const file = document.getElementById('f-file').files[0];
+  if (!name || !subject || !sem || !type || !file) {
+    showToast('Please fill all required fields and select a file.', 'error'); return;
+  }
+  if (file.size > 10 * 1024 * 1024) {
+    showToast('File too large. Max 10MB.', 'error'); return;
+  }
+  const btn = document.getElementById('submit-btn');
+  btn.disabled = true; btn.textContent = 'Uploading...';
+  document.getElementById('progress-bar').style.display = 'block';
+  try {
+    const storageRef = ref(storage, `resources/${Date.now()}_${file.name}`);
+    const task = uploadBytesResumable(storageRef, file);
+    task.on('state_changed', snap => {
+      const pct = Math.round(snap.bytesTransferred / snap.totalBytes * 100);
+      document.getElementById('progress-fill').style.width = pct + '%';
+    });
+    await task;
+    const url = await getDownloadURL(storageRef);
+    await addDoc(collection(db, "resources"), {
+      uploaderName: name, subject, semester: sem, type, year: year || null,
+      fileUrl: url, fileName: file.name, createdAt: new Date().toISOString()
+    });
+    showToast('Resource uploaded successfully! 🎉', 'success');
+    closeModal();
+    document.getElementById('f-name').value='';document.getElementById('f-subject').value='';
+    document.getElementById('f-sem').value='';document.getElementById('f-type').value='';
+    document.getElementById('f-year').value='';document.getElementById('f-file').value='';
+    document.getElementById('file-selected').style.display='none';
+    document.getElementById('progress-bar').style.display='none';
+    document.getElementById('progress-fill').style.width='0%';
+    await loadResources();
+  } catch(e) {
+    showToast('Upload failed: ' + e.message, 'error');
+  }
+  btn.disabled = false; btn.textContent = 'Upload Resource';
+};
+
+function showToast(msg, type='success') {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.className = `toast ${type} show`;
+  setTimeout(() => t.classList.remove('show'), 3500);
+}
+
+loadResources();
+</script>
+</body>
+</html>
